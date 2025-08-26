@@ -246,7 +246,7 @@ NATURAL
 -- EMP_NAME, JOB_NAME
 -- EMPLOYEE, JOB
 
---> ORALE문법
+--> ORALE문법 => 등가조인(EQUAL JOIN)
 SELECT 
        EMP_NAME
      , JOB_NAME
@@ -258,7 +258,7 @@ SELECT
    AND
        JOB_NAME = '대리';
 
---> ANSI문법
+--> ANSI문법 => 내부조인(INNER JOIN)   이널조인
 SELECT 
        EMP_NAME
      , JOB_NAME
@@ -269,8 +269,8 @@ SELECT
  WHERE 
        JOB_NAME = '대리';
 
-
-
+-- EQUAL JOIN / INNER JOIN : 일치하지 않는 행은 애초에 ResultSet에 포함시키지 않음
+----------------------------------------------------------------------------
 
 
 
