@@ -1,12 +1,12 @@
 -- <Quiz> --
 
--- '한국'에서 근무하는 사번, 사원명, 부서명, 직급명, 근무 나라명을 조회해 주세요
+-- '한국'에서 근무하는 사원들의 사번, 이름, 부서명, 직급명, 근무 나라명을 조회해 주세요
 
-SELECT * FROM EMPLOYEE;   -- EMP_NAME    DEPT_CODE  JOB_CODE
-SELECT * FROM DEPARTMENT; -- DEPT_TITLE  DEPT_ID              LOCATION_ID
-SELECT * FROM JOB;        -- JOB_NAME               JOB_CODE
-SELECT * FROM LOCATION;   -- LOCAL_NAME                       LOCAL_CODE
-SELECT * FROM NATIONAL;   -- 
+SELECT * FROM EMPLOYEE;   -- DEPT_CODE  JOB_CODE
+SELECT * FROM DEPARTMENT; -- DEPT_ID               LOCATION_ID
+SELECT * FROM JOB;        --            JOB_CODE                 
+SELECT * FROM LOCATION;   --                       LOCATION_ID   NATIONAL_CODE
+SELECT * FROM NATIONAL;   -- 									 NATIONAL_CODE
 
 
 SELECT

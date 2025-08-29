@@ -14,9 +14,9 @@
  *	MAXVALUE 최대값 -> 최대값 지정 옵션
  * 	MINVALUE 최소값 -> 최소값 지정 옵션
  * 	CYCLE / NOCYCLE -> 순환 여부 지정
- * 	--------생략가능
+ * 	-------- 모든 옵션 생략가능
  * 	CACHE 바이트크기 / NOCACHE -> 캐시메모리 쓸건지 말건지
- * 	--------생략가능  		->CACHE_SIZE 기본값은 20 BYTE
+ * 	--------생략가능하긴 함 	->CACHE_SIZE 기본값은 20 BYTE
  * 
  * * CACHE : 미리 발생할 값을 생성해서 저장을 해둘건지 말건지 여부 지정
  * 			 값이 필요할 때마다 매 번 새롭게 값을 생성해내는 것 보다는
@@ -98,7 +98,7 @@ SELECT * FROM EMPLOYEE;
  * 
  * -- 객체 접근권한 부여하는 법
  * 표현법
- * GRANT 권한종류(SELECT, INSERT, UPDATE, DELETE) TO 객체명(테이블명) 새 계정명;
+ * GRANT 권한종류(SELECT, INSERT, UPDATE, DELETE) ON 객체명(테이블명) TO 계정명;
  * 
  * *시스템권한의 종류
  * - CREATE SESSION : 계정에 접속할 수 있는 권한
@@ -123,7 +123,7 @@ SELECT
   FROM 
        ROLE_SYS_ PRIVS;
  WHERE
-       ROLE
+       ROLE IN()
 
 
 

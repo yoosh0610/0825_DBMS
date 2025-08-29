@@ -109,7 +109,7 @@ ROLLBACK;
 /*
  * DDL 구문(CREATE, ALTER, DROP)을 수행하는 순간
  * 트랜잭션에 있는 모든 작업사항을 무조건 COMMIT해서 실제 DB에 반영 한 후 DDL을 수행
- * --> DDL을 써서  !!!!!!!!!!!!
+ * --> DDL을 써야하는데 이젠 트랜잭션이 존재한다 ==> COMMIT / ROLLBACK 수행 수 처리
  * 
  */
 
