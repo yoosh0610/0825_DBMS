@@ -1,0 +1,47 @@
+!SESSION 2025-08-27 13:19:09.254 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=21.0.5
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=ko
+Framework arguments:  -eclipse.keyring C:\Users\user1\AppData\Roaming\DBeaverData\secure\secure_storage
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -data C:\yoosh\oracle-workspace -eclipse.keyring C:\Users\user1\AppData\Roaming\DBeaverData\secure\secure_storage
+
+!ENTRY org.eclipse.ui 2 2 2025-08-27 13:19:12.460
+!MESSAGE Invalid preference category path: org.eclipse.debug.ui.ConsolePreferencePage (bundle: org.eclipse.ui.console, page: org.eclipse.ui.internal.console.ansi.preferences.AnsiConsolePreferencePage)
+
+!ENTRY org.jkiss.dbeaver.model 2 0 2025-08-27 13:23:11.596
+!MESSAGE SWT resource leak detected
+!SUBENTRY 1 org.jkiss.dbeaver.model 2 0 2025-08-27 13:23:11.596
+!MESSAGE SWT Resource was not properly disposed
+!STACK 0
+java.lang.Error: SWT Resource was not properly disposed
+	at org.eclipse.swt.graphics.Resource.initNonDisposeTracking(Resource.java:191)
+	at org.eclipse.swt.graphics.Resource.<init>(Resource.java:124)
+	at org.eclipse.swt.graphics.Image.<init>(Image.java:229)
+	at org.jkiss.dbeaver.ui.editors.sql.SQLEditor.refreshEditorIconAndTitle(SQLEditor.java:3307)
+	at org.jkiss.dbeaver.ui.editors.sql.SQLEditor.onDataSourceChange(SQLEditor.java:3217)
+	at org.jkiss.dbeaver.ui.editors.sql.SQLEditor.onDataSourceChange(SQLEditor.java:3190)
+	at org.jkiss.dbeaver.ui.UIExecutionQueue.executeInUI(UIExecutionQueue.java:88)
+	at org.eclipse.swt.widgets.RunnableLock.run(RunnableLock.java:40)
+	at org.eclipse.swt.widgets.Synchronizer.runAsyncMessages(Synchronizer.java:132)
+	at org.eclipse.swt.widgets.Display.runAsyncMessages(Display.java:4111)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3727)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$5.run(PartRenderingEngine.java:1151)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:339)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.run(PartRenderingEngine.java:1042)
+	at org.eclipse.e4.ui.internal.workbench.E4Workbench.createAndRunUI(E4Workbench.java:153)
+	at org.eclipse.ui.internal.Workbench.lambda$3(Workbench.java:678)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:339)
+	at org.eclipse.ui.internal.Workbench.createAndRunWorkbench(Workbench.java:583)
+	at org.eclipse.ui.PlatformUI.createAndRunWorkbench(PlatformUI.java:173)
+	at org.jkiss.dbeaver.ui.app.standalone.DBeaverApplication.start(DBeaverApplication.java:313)
+	at org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:219)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:149)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:115)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:467)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:298)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source)
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source)
+	at org.jkiss.dbeaver.launcher.DBeaverLauncher.invokeFramework(DBeaverLauncher.java:870)
+	at org.jkiss.dbeaver.launcher.DBeaverLauncher.basicRun(DBeaverLauncher.java:661)
+	at org.jkiss.dbeaver.launcher.DBeaverLauncher.run(DBeaverLauncher.java:1651)

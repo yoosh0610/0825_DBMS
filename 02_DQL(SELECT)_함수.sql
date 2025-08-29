@@ -22,10 +22,6 @@ SELECT
         EMPLOYEE;
 -- 단일행 함수와 그룹함수는 함께 사용할 수 없음 : 결과 행의 개수가 다르기 때문
 
-
-
-
-
 /*
  * < 문자열 관련된 함수 >
  * LENGTH / LENGTHB
@@ -198,7 +194,7 @@ SELECT
  *  : 문자열의 앞 / 뒤 / 양쪽에 있는 문자를 제거한 나머지 문자열을 반환
  * 
  * 결과값은 CHARACTER
- * BOTH / LEADING / TRAILING !!!!!
+ * BOTH / LEADING / TRAILING은 생략 가능, 참고로 생략시 기본값은 BOTH
  */
 SELECT
        TRIM('      K  H   ')
@@ -252,7 +248,7 @@ SELECT
  * 
  * 반환타입은 CHARACTER
  */
-SELECT CONCAT('경실련 하이텔', '정보교육원')!!!!!!!!
+SELECT CONCAT('경실련 하이텔', '정보교육원') FROM DUAL;
 --------------------------------------------------------------------------
 /*
  * REPLACE
@@ -275,8 +271,7 @@ SELECT
 /*
  * MOD
  * 
- * - MOD(NUMBER1, NUMBER2) : 두 수를 나눈 나머지 값 !!!!!!!!!!!!!!
- * 
+ * - MOD(NUMBER1, NUMBER2) : 두 수를 나눈 나머지 값을 반환
  */
 
 SELECT
@@ -291,7 +286,7 @@ SELECT
  * ROUND
  * - ROUND(NUMBER, 위치) : 반올림 처리해주는 함수
  * 
- * 위치 : 소수점 아래 N번째 !!!!!!!!!!!!!!!!!
+ * 위치 : 소수점 아래 N번째 위치를 지정할 수 있음
  * 생략도 가능, 생략시 기본값은 0
  */
 SELECT
@@ -420,8 +415,9 @@ SELECT
      , EXTRACT(YEAR FORM SYSDATE)- EXTRACT(YEAR FORM HIRE_DATE)
   FROM
        EMPLOYEE;
-
---!!!!!!!!!!!!!!!
+ ORDER
+    BY
+       "년도", "월", "일";
 -------------------------------------------------------------------------------------
 /*
  * < 형변환 함수 >

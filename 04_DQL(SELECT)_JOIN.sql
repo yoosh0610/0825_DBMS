@@ -192,14 +192,14 @@ SELECT
 -- EMP_NAME, DEPT_CODE, DEPT_TITLE
 -- 사원명, 부서코드, 부서명
 -- 연결컬럼이 컬럼명이 다름(EMPLOYEE - DEPT_CODE / DEPARTMENT - DEPT_ID)
--- 무조건 ON구문만 사용가능!!!(USING은 못씀 안됨 불가능함!!!!!!!!)
+-- 무조건 ON구문만 사용가능!!!(USING은 못씀 안됨 불가능함!!!)
 SELECT
        EMP_NAME
      , DEPT_CODE
      , DEPT_TITLE
   FROM
        EMPLOYEE
--- INNER
+-- INNER(생략가능)
   JOIN  
        DEPARTMENT ON (DEPT_CODE = DEPT_ID);
 
@@ -246,7 +246,7 @@ NATURAL
 -- EMP_NAME, JOB_NAME
 -- EMPLOYEE, JOB
 
---> ORALE문법 => 등가조인(EQUAL JOIN)
+--> ORACLE문법 => 등가조인(EQUAL JOIN)
 SELECT 
        EMP_NAME
      , JOB_NAME
@@ -271,69 +271,405 @@ SELECT
 
 -- EQUAL JOIN / INNER JOIN : 일치하지 않는 행은 애초에 ResultSet에 포함시키지 않음
 ----------------------------------------------------------------------------
+/*
+ * 2. 포괄조인 / 외부조인(OUTER JOIN)
+ * 
+ * 테이블간의 JOIN 시 일치하지 않는 행도 포함시켜서 ResultSet 반환
+ * 단, 반드시 LEFT / RIGHT를 지정해줘야 함!(기준 테이블을 선택해야 함)
+ */
+-- EMPLOYEE테이블에 존재하는 "모든" 사원의 사원명, 부서명 조회
+-- INNER JOIN
+SELECT 
+       EMP_NAME
+     , DEPT_TITLE
+  FROM
+       EMPLOYEE
+-- INNER
+  JOIN
+       DEPARTMENT ON (DEPT_CODE = DEPT_ID);
+--EMPLOYEE 테이블에서 DEPT_CODE가 NULL인 두 명의 사원은 조회 X
+--DEPARTMENT 테이블에서 부서에 배정된 사원이 없는 부서(D3, D4, D7) 조회 X
 
+-- 1) LEFT [ OUTER ] JOIN : 두 테이블 중 왼편에 기술한 테이블을 기준으로 JOIN
+-- 조건과는 상관없이 왼편에 기술한 테이블의 데이터를 전부 조회(일치하는 값을 못찾더라도 조회)
 
+--> ANSI
+SELECT 
+       EMP_NAME
+     , DEPT_TITLE
+  FROM
+       EMPLOYEE
+  LEFT
+-- OUTER(생략가능)
+  JOIN
+       DEPARTMENT ON (DEPT_CODE = DEPT_ID);
+-- LEFT기준으로 왼쪽에 있는 테이블을 모두 출력할거야
 
+--> ORACLE
+SELECT 
+       EMP_NAME
+     , DEPT_TITLE
+  FROM
+       EMPLOYEE
+     , DEPARTMENT
+ WHERE
+       DEPT_CODE = DEPT_ID(+);
+--기준으로 삼지 않을 테이블의 컬럼에 (+)를 붙여준다
 
+--EMP_NAME 기준으로 이름의 값이 없더라도 조회
 
+-- 2) RIGHT [ OUTER ] JOIN : 두 테이블 중 오른편에 기술한 테이블을 기준으로 JOIN
+-- 일치하는 컬럼이 존재하지 않더라도 오른쪽 테이블의 데이터는 무우우조건 다 조회
 
+--> ANSI
+SELECT 
+       EMP_NAME
+     , DEPT_TITLE
+  FROM
+       EMPLOYEE
+ RIGHT
+  JOIN
+       DEPARTMENT ON (DEPT_CODE = DEPT_ID);
 
+--> ORACLE
+SELECT 
+       EMP_NAME
+     , DEPT_TITLE
+  FROM
+       EMPLOYEE
+     , DEPARTMENT
+ WHERE
+       DEPT_CODE(+) = DEPT_ID;
 
+-- DEPT_TITLE 기준으로 부서명에 사람이 없더라도 조회
 
+-- 3) FULL [ OUTER ] JOIN : 두 테이블이 가진 모든 행을 조회할 수 있는 JOIN
 
+--> ANSI
+SELECT 
+       EMP_NAME
+     , DEPT_TITLE
+  FROM
+       EMPLOYEE
+  FULL
+ OUTER
+  JOIN
+       DEPARTMENT ON (DEPT_CODE = DEPT_ID);
+-- 두테이블의 값이 없는 모든 컬럼도 다 조회
 
+--> ORACLE : 오라클 구문에서는 사용이 불가능!!
+SELECT 
+       EMP_NAME
+     , DEPT_TITLE
+  FROM
+       EMPLOYEE
+     , DEPARTMENT
+ WHERE
+       DEPT_CODE(+) = DEPT_ID(+);
+---------------------------------------------------------------------------
+/*
+ * 3. 카테시안 곱(CARTESIAN PRODUCT) / 교차조인(CROSS JOIN)
+ * 모든 테이블의 각 행들을 서로서로 매핑해서 조화된 (곱집합) ** 사용금지 문법
+ * 
+ * 두 테이블들의 행들이 곱해진 조회 뽑아냄 => 데이터 많을수록 방대한 행이 생겨남
+ * => 과부화의 위험
+ */
 
+--> ORACLE
+SELECT EMP_NAME, DEPT_TITLE FROM EMPLOYEE, DEPARTMENT;
+--                                  23   *    9       =>  207
+--> ANSI
+SELECT EMP_NAME, DEPT_TITLE FROM EMPLOYEE CROSS JOIN DEPARTMENT;
+--------------------------------------------------------------------------------
+/*
+ * 4. 비등가 조인(NON EQUAL JOIN)
+ * '='를 사용하지 않는 조인
+ * 
+ * 컬럼값을 비교하는 경우가 아니라 "범위"에 포함되는 내용을 매칭
+ */
+-- EMPLOYEE테이블로부터 사원명, 급여
+SELECT 
+       EMP_NAME
+     , SALARY
+  FROM
+       EMPLOYEE;
 
+SELECT * FROM SAL_GRADE;
 
+--> ORACLE
+SELECT 
+       EMP_NAME
+     , SALARY
+     , SAL_GRADE.SAL_LEVEL
+     , MIN_SAL, MAX_SAL
+  FROM
+       EMPLOYEE
+     , SAL_GRADE
+ WHERE
+       SALARY BETWEEN MIN_SAL AND MAX_SAL;
 
+--> ANSI
+SELECT 
+       EMP_NAME
+     , SALARY
+     , SAL_GRADE.SAL_LEVEL
+  FROM
+       EMPLOYEE
+  JOIN
+       SAL_GRADE ON (SALARY BETWEEN MIN_SAL AND MAX_SAL);
+ --------------------------------------------------------------------------    
+/*
+ * 5. 자체조인(SELF JOIN)
+ * 
+ * 같은 테이블을 다시 한 번 조인하는 경우
+ * 자기 자신의 테이블과 조인을 맺음
+ */
+SELECT 
+       EMP_ID "사원번호"
+     , EMP_NAME "사원 이름"
+     , PHONE "전화번호"
+     , MANAGER_ID "사수번호"
+  FROM
+       EMPLOYEE;
 
+SELECT EMP_ID, EMP_NAME, PHONE, MANAGER_ID FROM EMPLOYEE;
+SELECT EMP_ID, EMP_NAME, PHONE FROM EMPLOYEE;
 
+--> ORACLE
+-- 사원사번, 사원명, 사원 폰번호, 사수번호
+-- 사수사번, 사수명, 사수 폰번호
+SELECT 
+       E.EMP_ID, E.EMP_NAME, E.PHONE, E.MANAGER_ID,
+       M.EMP_ID, M.EMP_NAME, M.PHONE
+  FROM
+       EMPLOYEE E,
+       EMPLOYEE M
+--조회하는 테이블이 같을 때 별칭을 붙여 구분 => 카테시안 곱
+ WHERE
+       --E.MANAGER_ID = M.EMP_ID;
+--사수번호가 없는 사원이 존재해서 15명만 조회
+       E.MANAGER_ID = M.EMP_ID(+);
 
+--> ANSI
+SELECT 
+       E.EMP_ID, E.EMP_NAME, E.PHONE, E.MANAGER_ID,
+       M.EMP_ID, M.EMP_NAME, M.PHONE
+  FROM
+       EMPLOYEE E
+  LEFT
+  JOIN    
+       EMPLOYEE M ON (E.MANAGER_ID = M.EMP_ID);
+-------------------------------------------------------------------------------
+/*
+ * < 다중 JOIN >
+ * 
+ */
+-- 사원명 + 부서명 + 직급명 + 지역명(LOCAL_NAME) --> 4개가 전부 다른 테이블
+SELECT * FROM EMPLOYEE;    -- EMP_NAME    DEPT_CODE  JOB_CODE
+SELECT * FROM DEPARTMENT;  -- DEPT_TITLE  DEPT_ID              LOCATION_ID
+SELECT * FROM JOB;         -- JOB_NAME               JOB_CODE
+SELECT * FROM LOCATION;    -- LOCAL_NAME                       LOCAL_CODE
+--미리 정리해서 하는것이 꼬이지 않음(계획이 80%-얼마나 꼼꼼하게 했는지, 순서도 계획-차근차근)
 
+--EMP_NAME, DEPT_TITLE, JOB_NAME, LOCAL_NAME
+--> ANSI 구문
+SELECT
+       EMP_NAME
+     , DEPT_TITLE
+     , JOB_NAME
+     , LOCAL_NAME
+  FROM
+       EMPLOYEE
+  LEFT--
+  JOIN
+       DEPARTMENT ON (DEPT_CODE = DEPT_ID)
+  JOIN
+       JOB USING (JOB_CODE)
+  LEFT--
+  JOIN
+       LOCATION ON (LOCATION_ID = LOCAL_CODE);
+-- 부서, 지역명이 없는 2명이 제외 -> LEFT
 
+--> ORACLE
+SELECT
+       EMP_NAME
+     , DEPT_TITLE
+     , JOB_NAME
+     , LOCAL_NAME
+  FROM
+       EMPLOYEE E
+     , DEPARTMENT
+     , JOB J
+     , LOCATION
+ WHERE    
+       DEPT_CODE = DEPT_ID(+)
+   AND     
+       LOCATION_ID = LOCAL_CODE(+)
+   AND     
+       E.JOB_CODE = J.JOB_CODE;
+---------------------------------------------------------------------------------
+/*
+ * < 집합 연산자 SET OPERATOR> (= 집합)
+ * 
+ * 여러 개의 쿼리문을 가지고 하나의 쿼리문으로 만드는 연산자
+ * 
+ * - UNION : 합집합(두 쿼리문의 수행 결과값을 더한 후 중복되는 부분을 제거)
+ * - INTERSECT : 교집합(두 쿼리문의 수행 결과값중 중복된 부분)
+ * - MINUS : 차집합(선행 쿼리문 결과값 빼기 후행 쿼리문의 결과값을 한 결과)
+ *   -- AND, OR문으로 대체 가능
+ * - UNION ALL : 합집합의 결과에 교집합을 더한 개념
+ * (두 쿼리문을 수행한 결과값을 무조건 더함. 합집합에서 중복 제거를 하지 않는 것)
+ * => 중복행이 여러 번 조회 될 수 있음
+ */
 
+-- 1. UNION
+-- 부서코드가 D5인 사원들 조회
+SELECT
+       EMP_NAME
+     , DEPT_CODE
+     , SALARY
+  FROM
+       EMPLOYEE
+ WHERE
+       DEPT_CODE = 'D5'; -- 6명
+--급여가 300만원 초과인 사원들
+SELECT
+       EMP_NAME
+     , DEPT_CODE
+     , SALARY
+  FROM
+       EMPLOYEE
+ WHERE
+       SALARY > 3000000; -- 8명
 
+SELECT
+       EMP_NAME
+     , DEPT_CODE
+     , SALARY
+  FROM
+       EMPLOYEE
+ WHERE
+       DEPT_CODE = 'D5'
+ UNION
+SELECT
+       EMP_NAME
+     , DEPT_CODE
+     , SALARY
+  FROM
+       EMPLOYEE
+ WHERE
+       SALARY > 3000000;
+--쿼리와 쿼리 사이에 UNION을 붙임
+SELECT
+       EMP_NAME
+     , DEPT_CODE
+     , SALARY
+  FROM
+       EMPLOYEE
+ WHERE
+        = 'D5'
+    OR
+       SALARY > 3000000;
+-- UNION 쓰려면 SELECT절에 시술하는 컬럼이 같아야 함(=>OR문과 비슷, 같지 않음)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+--부서코드가 D1, D2, D5인 부서의 급여합계를 조회하고 싶다
+SELECT SUM(SALARY)
+  FROM EMPLOYEE
+ WHERE DEPT_CODE = 'D1'
+ UNION
+SELECT SUM(SALARY)
+  FROM EMPLOYEE
+ WHERE DEPT_CODE = 'D2'
+ UNION
+SELECT SUM(SALARY)
+  FROM EMPLOYEE
+ WHERE DEPT_CODE = 'D5'
+--GROUP BY문으로 대체 가능
+SELECT SUM(SALARY)
+  FROM EMPLOYEE
+ WHERE DEPT_CODE IN ('D1', 'D2', 'D5')
+ GROUP BY DEPT_CODE;
+-----------------------------------------------------------------------------
+-- 2. UNION ALL : 여러 개의 쿼리 결과를 무조건 합치는 연산자(중복 가능) => 대체불가
+SELECT
+       EMP_NAME
+     , DEPT_CODE
+     , SALARY
+  FROM
+       EMPLOYEE
+ WHERE
+       DEPT_CODE = 'D5'
+ UNION
+   ALL
+SELECT
+       EMP_NAME
+     , DEPT_CODE
+     , SALARY
+  FROM
+       EMPLOYEE
+ WHERE
+       SALARY > 3000000;
+-----------------------------------------------------------------------------
+-- 3. INTERSECT : (교집합 - 여러 쿼리 결과의 중복된 결과만을 조회)
+SELECT
+       EMP_NAME
+     , DEPT_CODE
+     , SALARY
+  FROM
+       EMPLOYEE
+ WHERE
+       DEPT_CODE = 'D5'
+INTERSECT
+SELECT
+       EMP_NAME
+     , DEPT_CODE
+     , SALARY
+  FROM
+       EMPLOYEE
+ WHERE
+       SALARY > 3000000;
+--AND문으로 대체 가능
+SELECT
+       EMP_NAME
+     , DEPT_CODE
+     , SALARY
+  FROM
+       EMPLOYEE
+ WHERE
+       DEPT_CODE = 'D5'
+   AND
+       SALARY > 3000000;
+-----------------------------------------------------------------------------
+-- 4. MINUS : (차집합 - 선행쿼리 결과에서 후행 쿼리결과를 뺀 나머지)
+SELECT
+       EMP_NAME
+     , DEPT_CODE
+     , SALARY
+  FROM
+       EMPLOYEE
+ WHERE
+       DEPT_CODE = 'D5'
+ MINUS
+SELECT
+       EMP_NAME
+     , DEPT_CODE
+     , SALARY
+  FROM
+       EMPLOYEE
+ WHERE
+       SALARY > 3000000;
+--AND문으로 대체 가능
+SELECT
+       EMP_NAME
+     , DEPT_CODE
+     , SALARY
+  FROM
+       EMPLOYEE
+ WHERE
+       DEPT_CODE = 'D5'
+   AND
+       SALARY <= 3000000;
+-- 관점의 전환하면 대체 가능
 
 
 
